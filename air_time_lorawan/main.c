@@ -64,12 +64,13 @@ float calculate_air_time( 	unsigned int sf,
 *   payload, and the MIC (4 bytes).
 */
 #define OVERHEAD_MAC_BYTES  	9+4  
-#define PAYLOAD_LENGTH_BYTES 	10
+#define PAYLOAD_LENGTH_BYTES 	12
 
 
 int main( void )
 {
- 	printf("%f", calculate_air_time(
+	/* airtime in ms */
+ 	printf("airtime in ms = %f\n\n", calculate_air_time(
 										SPREADING_FACTOR,
 										BANDWIDTH_KHZ,
 										EXPLICIT_HEADER,
@@ -80,9 +81,37 @@ int main( void )
 									)
 										/1000 //Converte para ms;
 									);
+
+	/* 1% max duty cycle */
+ 	printf("\n1% max duty cycle = %f\n\n", calculate_air_time(
+										SPREADING_FACTOR,
+										BANDWIDTH_KHZ,
+										EXPLICIT_HEADER,
+										LOWDR_OPTIMIZE,
+										CODING_RATE,
+										PREAMBLE_LENGTH_BYTES, 
+										(OVERHEAD_MAC_BYTES + PAYLOAD_LENGTH_BYTES)
+									)
+										/1000 * 1000 //Converte para ms;
+									);
+
+	{
+		/* ttn fair access policy */
+		float airtime  = calculate_air_time(
+											SPREADING_FACTOR,
+											BANDWIDTH_KHZ,
+											EXPLICIT_HEADER,
+											LOWDR_OPTIMIZE,
+											CODING_RATE,
+											PREAMBLE_LENGTH_BYTES, 
+											(OVERHEAD_MAC_BYTES + PAYLOAD_LENGTH_BYTES)
+										); //em segundos;
+		
+		// Maximum messages/day for 30 seconds TTN Fair Access Policy								
+		float ttn_fap_messages = 30000 / airtime;
+	  	float ttn_fap_delay = (24 * 3600) / ttn_fap_messages;
+	  	
+	 	printf("\nfair access policy = %f\n\n", ttn_fap_delay);		
+	}
+
 }
-
-
-
-
-
