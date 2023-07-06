@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define MAX(x,y) ( \
+#define MAX2(x,y) ( \
     { __auto_type __x = (x); __auto_type __y = (y); \
       __x > __y ? __x : __y; })
-  
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))  
 float calculate_air_time( 	unsigned int sf, 
 							unsigned int bw, 
 							unsigned int explicitHeader, 
@@ -64,13 +64,13 @@ float calculate_air_time( 	unsigned int sf,
 *   payload, and the MIC (4 bytes).
 */
 #define OVERHEAD_MAC_BYTES  	9+4  
-#define PAYLOAD_LENGTH_BYTES 	12
+#define PAYLOAD_LENGTH_BYTES 	33
 
 
 int main( void )
 {
 	/* airtime in ms */
- 	printf("airtime in ms = %f\n\n", calculate_air_time(
+ 	printf("airtime in s = %f\n\n", calculate_air_time(
 										SPREADING_FACTOR,
 										BANDWIDTH_KHZ,
 										EXPLICIT_HEADER,
@@ -83,7 +83,7 @@ int main( void )
 									);
 
 	/* 1% max duty cycle */
- 	printf("\n1% max duty cycle = %f\n\n", calculate_air_time(
+ 	printf("\nmax duty cycle in s = %f\n\n", calculate_air_time(
 										SPREADING_FACTOR,
 										BANDWIDTH_KHZ,
 										EXPLICIT_HEADER,
@@ -92,7 +92,7 @@ int main( void )
 										PREAMBLE_LENGTH_BYTES, 
 										(OVERHEAD_MAC_BYTES + PAYLOAD_LENGTH_BYTES)
 									)
-										/1000 * 1000 //Converte para ms;
+										/1000 *100 //Converte para ms;
 									);
 
 	{
@@ -111,7 +111,7 @@ int main( void )
 		float ttn_fap_messages = 30000 / airtime;
 	  	float ttn_fap_delay = (24 * 3600) / ttn_fap_messages;
 	  	
-	 	printf("\nfair access policy = %f\n\n", ttn_fap_delay);		
+	 	printf("\nfair access policy in s= %f\n\n", ttn_fap_delay);		
 	}
 
 }
